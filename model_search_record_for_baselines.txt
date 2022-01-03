@@ -1,0 +1,18 @@
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	5	0.37212	0.49613	0.42527	bert_crf	1e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	13	0.41565	0.48141	0.44612	bert_crf	2e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	16	0.43123	0.4969	0.46174	bert_crf	5e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	14	0.44241	0.4858	0.46309	bert_crf	7e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	12	0.4424	0.50155	0.47012	bert_crf	9e-05	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	14	0.38448	0.45018	0.41474	bert	1e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	12	0.4112	0.47574	0.44112	bert	2e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	10	0.43966	0.48529	0.46135	bert	5e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	14	0.43777	0.49303	0.46376	bert	7e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	16	0.44671	0.49122	0.46791	bert	9e-05	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+0.45476	0.49909	0.47589	关键词共错 4911 个，其中分类错 2228 个，占比 0.45368	None	None	None	None	bert_crf	1e-05	0	(1, 1)	None	0.01	32	None
+0.45476	0.49909	0.47589	关键词共错 4911 个，其中分类错 2228 个，占比 0.45368	None	None	None	None	bert_crf	2e-05	0	(1, 1)	None	0.01	32	None
+0.45476	0.49909	0.47589	关键词共错 4911 个，其中分类错 2228 个，占比 0.45368	None	None	None	None	bert_crf	5e-05	0	(1, 1)	None	0.01	32	None
+0.45476	0.49909	0.47589	关键词共错 4911 个，其中分类错 2228 个，占比 0.45368	None	None	None	None	bert_crf	7e-05	0	(1, 1)	None	0.01	32	None
+0.45476	0.49909	0.47589	关键词共错 4911 个，其中分类错 2228 个，占比 0.45368	None	None	None	None	bert_crf	9e-05	0	(1, 1)	None	0.01	32	None
