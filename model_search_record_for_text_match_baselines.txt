@@ -1,0 +1,5 @@
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	3	0.87038	0.80005	0.83373	bert	1e-05	0	(1, 1)	None	0.01	32	None
+None	None	None	None	3	0.87794	0.79518	0.83451	bert	2e-05	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+1.0	0.78736	0.88103		None	None	None	None	bert	1e-05	0	(1, 1)	None	0.01	32	None

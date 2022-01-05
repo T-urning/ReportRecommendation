@@ -42,7 +42,7 @@ from utils.utils import (read_by_lines, write_by_lines, load_dict, extract_resul
 
 from utils.losses import FocalLoss
 
-from data_prepare import (KeywordDataset, convert_example_to_feature)
+from data_prepare import (KeywordDataset, ke_convert_example_to_feature)
 
 from models.baseline_models import BiLSTM, BiLSTMCRF, DMCNN
 from models.bert_based_models import BertForKE, BertCrfWithContraintForKE, BertCrfForKE
@@ -68,7 +68,7 @@ parser.add_argument("--skip_step", type=int, default=50, help="skip step")
 parser.add_argument("--train_batch_size", type=int, default=32, help="Total examples' number in batch for training.")
 parser.add_argument("--eval_batch_size", type=int, default=32, help="Total examples' number in batch for validating.")
 parser.add_argument("--init_ckpt", type=str, default=None, help="already pretraining model checkpoint")
-parser.add_argument("--output_dir", default="output", type=str, required=False, help="The output directory where the model predictions and checkpoints will be written.")
+parser.add_argument("--output_dir", default="outputs", type=str, required=False, help="The output directory where the model predictions and checkpoints will be written.")
 parser.add_argument("--predict_save_path", type=str, default=None, help="predict data save path")
 parser.add_argument("--seed", type=int, default=24, help="random seed for initialization")
 parser.add_argument("--n_gpu", type=int, default=1, help="Number of GPUs to use, 0 for CPU.")
@@ -373,7 +373,7 @@ def main(model_map):
     tokenizer = BertTokenizer.from_pretrained(model_path)
 
     trans_func = partial(
-        convert_example_to_feature,
+        ke_convert_example_to_feature,
         tokenizer=tokenizer,
         label_vocab=args.label_map,
         max_seq_len=args.max_seq_len,
@@ -448,7 +448,7 @@ def main(model_map):
     else:
 
         raw_texts = []
-        test_path = os.path.join(args.data_path, 'test.tsv')
+        test_path = os.path.join(args.data_path, 'predict.tsv')
         with open(test_path, 'r', encoding='utf-8') as f:
             # skip the head line
             next(f)
@@ -502,7 +502,7 @@ if __name__ == '__main__':
     
     #args.model_name = 'bert'
     args.data_path = 'data/conference/' # 'data/journals/'
-    args.output_dir = 'output/journals'
+    args.output_dir = 'outputs/journals'
     args.pretrained_model = 'bert_wwm_ext'
     args.no_entity_label = "O"
     args.ignore_label = -1 # 'O' 是最后一个标签，损失函数中会忽略的标签

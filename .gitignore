@@ -3,3 +3,4 @@ data/matched_paper_from_baidu_xueshu/
 *.pyc
 pretrained_models/
 .ipynb_checkpoints/
+outputs/
