@@ -228,21 +228,20 @@ def data_process_text_match(path, is_predict=False, need_header=True):
                 ' ' if t in ['\n', '\t'] else t 
                 for t in list(title.lower())
             ]
-            if len(text_a) > 64 or len(text_a) < 5: continue
+            if not is_predict and (len(text_a) > 64 or len(text_a)) < 4: continue
             for keyword in keyword_list:
 
                 text_b = [
                     ' ' if t in ['\n', '\t'] else t
                     for t in list(keyword.lower())
                 ]
-                if len(text_b) > 10 or len(text_b) < 3: continue
+                if not is_predict and (len(text_b) > 10 or len(text_b)) < 3: continue
                 text_lens.append(len(text_a)+len(text_b))
                 if len(text_a) + len(text_b) > 100:
                     print('here.')
-            
                 # if len(text_a) < 5 or len(text_a) > 55: print(title)
                 if is_predict:
-                    output.append('{}\t{}'.formate('\002'.join(text_a), '\002'.join(text_b)))
+                    output.append('{}\t{}'.format('\002'.join(text_a), '\002'.join(text_b)))
                 else:   
                     output.append('{}\t{}\t{}'.format('\002'.join(text_a), '\002'.join(text_b), 1))
     if len(text_lens) > 0:
@@ -375,7 +374,9 @@ if __name__ == "__main__":
     # for text matching
     data_root = 'data/journals'
     data_file = os.path.join(data_root, 'preprocessed_data.jl')
-    all_data = data_process_text_match(data_file, need_header=True)
+    data_file = 'data/text_match/predict.jl'
+    all_data = data_process_text_match(data_file, is_predict=True, need_header=True)
+    write_by_lines('data/text_match/predict.tsv', all_data)
     header = all_data[:1]
     train_data, test_data = train_test_split(all_data[1:], train_size=0.8, random_state=24, shuffle=True)
     auged_train_data = data_augmentation_for_text_match(train_data, negative_ratio=3)

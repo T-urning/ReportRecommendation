@@ -60,6 +60,7 @@ parser.add_argument("--vocab_path", type=str, default=None, help="vocab path")
 parser.add_argument("--model_name", type=str, default='bert', help="model name")
 parser.add_argument("--data_path", type=str, default='./data', help="train data")
 parser.add_argument("--do_train", type=ast.literal_eval, default=False, help="do train")
+parser.add_argument("--do_test", type=ast.literal_eval, default=False, help="do test")
 parser.add_argument("--do_predict", type=ast.literal_eval, default=False, help="do predict")
 parser.add_argument("--test", type=ast.literal_eval, default=False, help="do badcase analysis")
 parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay rate for L2 regularizer.")
@@ -179,7 +180,8 @@ def evaluate(model, criterion, data_loader):
     losses = []
     gold_labels = []
     pred_labels = []
-    for idx, (input_ids, token_type_ids, seq_lens, labels) in tqdm(enumerate(data_loader)):
+    total_iters = len(data_loader.dataset) // data_loader.batch_size + 1
+    for idx, (input_ids, token_type_ids, seq_lens, labels) in tqdm(enumerate(data_loader), total=total_iters):
         input_ids, labels, token_type_ids = (
             torch.LongTensor(input_ids).to(args.device), 
             torch.LongTensor(labels).to(args.device),
@@ -213,7 +215,8 @@ def do_predict(model, raw_texts, predict_loader):
     model.to(args.device).eval()
     predict_results = []
     example_idx = 0
-    for batch_idx, (input_ids, token_type_ids, seq_lens) in tqdm(enumerate(predict_loader)):
+    total_iters = len(predict_loader.dataset) // predict_loader.batch_size + 1
+    for batch_idx, (input_ids, token_type_ids, seq_lens) in tqdm(enumerate(predict_loader), total=total_iters):
 
         input_ids, token_type_ids = (
             torch.LongTensor(input_ids).to(args.device), 
@@ -226,7 +229,8 @@ def do_predict(model, raw_texts, predict_loader):
         if result.predictions is not None:
             preds = result.predictions
         else:
-            preds = result.logits[:, -1] # torch.argmax(result.logits, axis=-1)
+            preds = torch.exp(result.logits[:, -1])
+            # preds = result.logits[:, -1] # torch.argmax(result.logits, axis=-1)
 
         predictions = preds.cpu().numpy()
         
@@ -235,7 +239,7 @@ def do_predict(model, raw_texts, predict_loader):
             predict_results.append({
                 'id': example_idx,
                 'text': raw_texts[example_idx],
-                'label': pred
+                'prob': str(pred.item())
             })
             example_idx += 1
     assert len(predict_results) == example_idx
@@ -501,7 +505,7 @@ if __name__ == '__main__':
             # args.do_train = True
             # args.do_predict = True
 
-            args.do_test = True
+            args.do_predict = True
             args.test_epoch = 2
 
             if args.do_test:
