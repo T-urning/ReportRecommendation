@@ -366,11 +366,13 @@ def main(model_map):
     except OSError as oe:
         logger.warning(f'config.json or vocab.txt file are not exist in {pretrained_model_path}')
 
-
-    model = model_map[args.model_name].from_pretrained(
-                model_path, **{'num_labels':num_labels, 'max_seq_len': args.max_seq_len})
-    
     tokenizer = BertTokenizer.from_pretrained(model_path)
+    # TODO model_path 需要改
+    bert_embedding_file = 'E:/PythonProjects/MutilTaskEnhancedEventDetection/bert_word_embeddings.pt'
+    model = model_map[args.model_name].from_pretrained(
+                model_path, **{'num_labels':num_labels, 'max_seq_len': args.max_seq_len, 'embedding_file': bert_embedding_file, 'from_bert':True})
+    
+    
 
     trans_func = partial(
         ke_convert_example_to_feature,
@@ -485,15 +487,15 @@ if __name__ == '__main__':
     model_map = {
         'bert': BertForKE,
         'bert_crf': BertCrfForKE,
-        'bert_crf_cons': BertCrfWithContraintForKE,
+        # 'bert_crf_cons': BertCrfWithContraintForKE,
         'bilstm': BiLSTM,
         'bilstm_crf': BiLSTMCRF,
         'dmcnn': DMCNN
     }
     lr_map = {
-        'bert': 2e-5,
-        'bert_crf': 2e-5,
-        'bert_crf_cons': 1e-5,
+        'bert': 5e-5,
+        'bert_crf': 5e-5,
+        # 'bert_crf_cons': 1e-5,
         'bilstm': 1e-3,
         'bilstm_crf': 1e-3,
         'dmcnn': 1e-3
@@ -501,18 +503,18 @@ if __name__ == '__main__':
 
     
     #args.model_name = 'bert'
-    args.data_path = 'data/conference/' # 'data/journals/'
+    args.data_path =  'data/journals/' # 'data/conference/'
     args.output_dir = 'outputs/journals'
     args.pretrained_model = 'bert_wwm_ext'
     args.no_entity_label = "O"
     args.ignore_label = -1 # 'O' 是最后一个标签，损失函数中会忽略的标签
     searched_times = 0
     record_writer = open('model_search_record_for_baselines.txt', mode='a', encoding='utf-8')
-    for lr in [1e-5, 2e-5, 5e-5, 7e-5, 9e-5]:
-        for time in range(1):
-        
-            args.model_name = 'bert_crf'
-            args.learning_rate = lr #lr_map[args.model_name]
+    for lr in [2e-4, 3e-4]:
+        for model_name in ['bert', 'bert_crf']:
+
+            args.model_name = model_name #'bert_crf'
+            args.learning_rate = lr # lr_map[args.model_name]
             args.epsilon = None
 
             #args.loss_function_name = 'cross_entropy_loss'
@@ -520,10 +522,10 @@ if __name__ == '__main__':
             args.gamma = 0
             args.weight = (1,1)
             
-            # args.do_train = True
+            args.do_train = True
             # args.do_badcase_analysis = True
-            args.do_predict = True
-            args.test_epoch = 12
+            # args.do_predict = True
+            # args.test_epoch = 12
 
             if args.do_badcase_analysis:
                 logger.warning(f"{'*'*50}")

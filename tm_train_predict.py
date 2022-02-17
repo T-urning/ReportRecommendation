@@ -505,7 +505,7 @@ if __name__ == '__main__':
             # args.do_train = True
             # args.do_predict = True
 
-            args.do_predict = True
+            args.do_test = True
             args.test_epoch = 2
 
             if args.do_test:
