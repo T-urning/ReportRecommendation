@@ -229,7 +229,9 @@ def do_predict(model, raw_texts, predict_loader):
         if result.predictions is not None:
             preds = result.predictions
         else:
-            preds = torch.exp(result.logits[:, -1])
+            
+            preds = torch.exp(result.logits[:, -1]) # F.softmax(result.logits, dim=-1)[:, -1]
+            # torch.exp(result.logits[:, -1])
             # preds = result.logits[:, -1] # torch.argmax(result.logits, axis=-1)
 
         predictions = preds.cpu().numpy()
@@ -505,7 +507,7 @@ if __name__ == '__main__':
             # args.do_train = True
             # args.do_predict = True
 
-            args.do_test = True
+            args.do_predict = True
             args.test_epoch = 2
 
             if args.do_test:
