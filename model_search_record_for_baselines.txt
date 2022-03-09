@@ -16,3 +16,21 @@ precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	lea
 0.45476	0.49909	0.47589	关键词共错 4911 个，其中分类错 2228 个，占比 0.45368	None	None	None	None	bert_crf	5e-05	0	(1, 1)	None	0.01	32	None
 0.45476	0.49909	0.47589	关键词共错 4911 个，其中分类错 2228 个，占比 0.45368	None	None	None	None	bert_crf	7e-05	0	(1, 1)	None	0.01	32	None
 0.45476	0.49909	0.47589	关键词共错 4911 个，其中分类错 2228 个，占比 0.45368	None	None	None	None	bert_crf	9e-05	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	12	0.38103	0.44063	0.40867	bilstm	0.001	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	34	0.24942	0.41688	0.31211	bilstm_crf	0.001	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	8	0.24106	0.34615	0.2842	dmcnn	0.001	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	14	0.43386	0.49871	0.46403	bert	5e-05	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	9	0.44858	0.48864	0.46775	bert	0.0001	0	(1, 1)	None	0.01	32	None
+None	None	None	None	18	0.43321	0.48554	0.45789	bert_crf	0.0001	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	14	0.42621	0.47341	0.44858	bert	0.0002	0	(1, 1)	None	0.01	32	None
+None	None	None	None	18	0.41827	0.48219	0.44796	bert_crf	0.0002	0	(1, 1)	None	0.01	32	None
+None	None	None	None	21	0.41545	0.45663	0.43507	bert	0.0003	0	(1, 1)	None	0.01	32	None
+None	None	None	None	5	0.25976	0.4587	0.33168	bert_crf	0.0003	0	(1, 1)	None	0.01	32	None
+precision	recall	f1	description	epochs	dev_prec	dev_recall	dev_f1	model_name	learning_rate	gamma	weight	epsilon	weight_decay	batch_size	others
+None	None	None	None	35	0.44688	0.49406	0.46929	bert_crf	9e-05	0	(1, 1)	None	0.01	32	None

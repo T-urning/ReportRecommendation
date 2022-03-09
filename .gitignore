@@ -4,3 +4,8 @@ data/matched_paper_from_baidu_xueshu/
 pretrained_models/
 .ipynb_checkpoints/
 outputs/
+ReportRecommendation.zip
+*.zip
+data/
+*.tsv
+*.txt

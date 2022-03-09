@@ -374,13 +374,15 @@ if __name__ == "__main__":
     # for text matching
     data_root = 'data/journals'
     data_file = os.path.join(data_root, 'preprocessed_data.jl')
-    data_file = 'data/text_match/predict.jl'
-    all_data = data_process_text_match(data_file, is_predict=True, need_header=True)
-    write_by_lines('data/text_match/predict.tsv', all_data)
+    # data_file = 'data/text_match/predict_topics.jl'
+    all_data = data_process_text_match(data_file, is_predict=False, need_header=True)
+    # write_by_lines('data/text_match/predict.tsv', all_data)
     header = all_data[:1]
     train_data, test_data = train_test_split(all_data[1:], train_size=0.8, random_state=24, shuffle=True)
-    auged_train_data = data_augmentation_for_text_match(train_data, negative_ratio=3)
+    
     output_folder = 'data/text_match'
-    write_by_lines(os.path.join(output_folder, 'train.tsv'), header + auged_train_data)
+    for n_p_ratio in [3, 5, 8, 10, 15, 20]:
+        auged_train_data = data_augmentation_for_text_match(train_data, negative_ratio=n_p_ratio)
+        write_by_lines(os.path.join(output_folder, f'train_{n_p_ratio}.tsv'), header + auged_train_data)
     write_by_lines(os.path.join(output_folder, 'test.tsv'), header + test_data)
     print(f'原始数据集长度: {len(all_data)-1}, 测试集长度: {len(test_data)}')

@@ -53,7 +53,7 @@ warnings.filterwarnings('ignore')
 
 # yapf: disable
 parser = argparse.ArgumentParser(__doc__)
-parser.add_argument("--num_epoch", type=int, default=50, help="Number of epoches for fine-tuning.")
+parser.add_argument("--num_epoch", type=int, default=1, help="Number of epoches for fine-tuning.")
 parser.add_argument("--learning_rate", type=float, default=5e-5, help="Learning rate used to train with warmup.")
 parser.add_argument("--tag_path", type=str, default=None, help="tag set path")
 parser.add_argument("--vocab_path", type=str, default=None, help="vocab path")
@@ -66,7 +66,7 @@ parser.add_argument("--test", type=ast.literal_eval, default=False, help="do bad
 parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay rate for L2 regularizer.")
 parser.add_argument("--warmup_proportion", type=float, default=0.1, help="Warmup proportion params for warmup strategy")
 parser.add_argument("--max_seq_len", type=int, default=64, help="Number of words of the longest seqence.")
-parser.add_argument("--valid_step", type=int, default=300, help="validation step")
+parser.add_argument("--valid_step", type=int, default=3000, help="validation step")
 parser.add_argument("--skip_step", type=int, default=50, help="skip step")
 parser.add_argument("--train_batch_size", type=int, default=32, help="Total examples' number in batch for training.")
 parser.add_argument("--eval_batch_size", type=int, default=32, help="Total examples' number in batch for validating.")
@@ -109,7 +109,7 @@ def do_train(model, train_loader, dev_loader, criterion, optimizer, scheduler):
     num_training_steps = len(train_loader) * args.num_epoch
 
     model_save_root = os.path.join(args.checkpoint_dir, "epoch_{}")
-    early_stopping = EarlyStopping(patience=20, metric='f1', trace_func=logger.info)
+    early_stopping = EarlyStopping(patience=1, metric='f1', trace_func=logger.info)
     training_record = TrainingRecord(os.path.join(args.record_dir, f'{args.model_name}_{args.pretrained_model}_training'), logger.info)
     train_output = ModelTrainOutput()
     step, best_f1 = 0, 0.0
@@ -139,7 +139,7 @@ def do_train(model, train_loader, dev_loader, criterion, optimizer, scheduler):
             
             loss_item = loss.item()
             if step > 0 and step % args.skip_step == 0:
-                logger.info(f'train epoch: {epoch+1} - step: {step} (total: {num_training_steps}) - loss: {loss_item:.6f}')
+                logger.info(f'train epoch: {epoch} - step: {step} (total: {num_training_steps}) - loss: {loss_item:.6f}')
             if step > 0 and step % args.valid_step == 0:
                 p, r, f1, loss_avg = evaluate(model, criterion, dev_loader)
                 
@@ -149,7 +149,7 @@ def do_train(model, train_loader, dev_loader, criterion, optimizer, scheduler):
                 if f1 > best_f1:
                     best_f1 = f1
                     train_output.dev_recall, train_output.dev_prec, train_output.dev_f1, train_output.epochs = (
-                        r, p, f1, epoch+1
+                        r, p, f1, epoch
                     )
                 training_record.add_record(**{'loss': loss_avg, 'precision': p, 'recall': r, 'f1': f1})
                 
@@ -403,9 +403,8 @@ def main(model_map):
             logger.remove(handler_id)
             return test_output
 
-        train_path = os.path.join(args.data_path, 'train.tsv')
+        train_path = os.path.join(args.data_path, f'train_{args.p_n_ratio}.tsv')
         train_ds = TextMatchDataset(train_path)
-        
         train_size = int(0.88 * len(train_ds))
         dev_size = len(train_ds) - train_size
         # 指定 generator 固定住 train dataset 和 dev dataset
@@ -492,9 +491,9 @@ if __name__ == '__main__':
     
     searched_times = 0
     record_writer = open('model_search_record_for_text_match_baselines.txt', mode='a', encoding='utf-8')
-    for lr in [1e-5, 2e-5, 5e-5, 7e-5, 9e-5]:
-        for time in range(1):
-        
+    for lr in [2e-5]:
+        for p_n_ratio in [3, 5, 8, 10, 15, 20]:
+            args.p_n_ratio = p_n_ratio
             args.model_name = 'bert'
             args.learning_rate = lr #lr_map[args.model_name]
             args.epsilon = None
@@ -504,11 +503,11 @@ if __name__ == '__main__':
             args.gamma = 0
             args.weight = (1,1)
             
-            # args.do_train = True
+            args.do_train = True
             # args.do_predict = True
 
-            args.do_predict = True
-            args.test_epoch = 2
+            # args.do_predict = True
+            # args.test_epoch = 2
 
             if args.do_test:
                 logger.warning(f"{'*'*50}")
@@ -531,17 +530,25 @@ if __name__ == '__main__':
                     logger.info(f"model test output: {output}")
                 else:
                     logger.info(f"model train output: {output}")
-
-
+                logger.warning(f"{'*'*50}")
+                logger.warning(f"{args.model_name} testing")
+                logger.warning(f"{'*'*50}")
+                args.do_test = True
+                args.test_epoch = output.epochs
+                test_output = main(model_map)
+                output_dict = output.__dict__
+                for k, v in test_output.__dict__.items():
+                    output_dict[k] = v
                 hyparas_for_model = HyperparasForModelSearch(
-                    **output.__dict__,
+                    **output_dict,
                     model_name=args.model_name,
                     learning_rate=args.learning_rate,
                     weight_decay=args.weight_decay,
                     batch_size=args.train_batch_size,
                     gamma=args.gamma,
                     weight=args.weight,
-                    epsilon=args.epsilon
+                    epsilon=args.epsilon,
+                    others=p_n_ratio
                 )
                 hyparas = hyparas_for_model.__dict__
                 if searched_times == 0:

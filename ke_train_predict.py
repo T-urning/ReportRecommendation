@@ -510,8 +510,8 @@ if __name__ == '__main__':
     args.ignore_label = -1 # 'O' 是最后一个标签，损失函数中会忽略的标签
     searched_times = 0
     record_writer = open('model_search_record_for_baselines.txt', mode='a', encoding='utf-8')
-    for lr in [2e-4, 3e-4]:
-        for model_name in ['bert', 'bert_crf']:
+    for lr in [9e-5]:
+        for model_name in ['bert_crf']:
 
             args.model_name = model_name #'bert_crf'
             args.learning_rate = lr # lr_map[args.model_name]
