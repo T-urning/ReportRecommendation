@@ -339,44 +339,30 @@ if __name__ == "__main__":
 
     print("\n=================Annotating==============")
     
-    ''' for baidu xueshu
     
-    root = os.path.dirname(__file__)
-    data_root = os.path.join(root, 'data')
-    raw_data_root = os.path.join(data_root, 'matched_paper_from_baidu_xueshu')
-    keyword_types = ['method', 'scope', 'topic']
-    outputs = []
-    for i, k_type in enumerate(keyword_types):
-
-        file_path = os.path.join(raw_data_root, 'matched_{}_paper_titles_all.jl'.format(k_type))
-        k_output = data_process_baidu_xueshu(file_path, k_type, is_predict=False, need_header=i==0)
-        outputs.extend(k_output)
-    # 划分数据集
-    split_train_test(outputs, data_root, ratio_train=0.8)
-    '''
-    
-    '''for journals
+    # for journals 期刊自动标注数据预处理
     data_root = 'data/journals'
     data_file = os.path.join(data_root, 'preprocessed_data.jl')
     output = data_process_journal(data_file, need_header=True)
     split_train_test(output, data_root, ratio_train=0.8)
     print(f'all_data: {len(output)}')
-    '''
     
-    '''for conference
+    # for conference 会议报告标题数据预处理
     data_root = 'data/conference'
     data_file = os.path.join(data_root, 'report_titles.jl')
     output = data_process_journal(data_file, is_predict=True, need_header=True)
     write_by_lines(os.path.join(data_root, 'predict.tsv'), output)
     print(f'all_data: {len(output)}')
-    '''
 
-    # for text matching
+    # 文本匹配预测数据生成
+    data_file = 'data/text_match/predict_topics.jl'
+    all_data = data_process_text_match(data_file, is_predict=False, need_header=True)
+    write_by_lines('data/text_match/predict.tsv', all_data)
+
+    # 生成不同正负样本比例的文本匹配训练样本
     data_root = 'data/journals'
     data_file = os.path.join(data_root, 'preprocessed_data.jl')
-    # data_file = 'data/text_match/predict_topics.jl'
     all_data = data_process_text_match(data_file, is_predict=False, need_header=True)
-    # write_by_lines('data/text_match/predict.tsv', all_data)
     header = all_data[:1]
     train_data, test_data = train_test_split(all_data[1:], train_size=0.8, random_state=24, shuffle=True)
     
